@@ -24,14 +24,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Pages not enabled
+        if: ${{ !github.event.repository.has_pages }}
+        run: echo "GitHub Pages is not enabled for this repo. Enable it in Settings > Pages to deploy."
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        if: ${{ github.event.repository.has_pages }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: "."
+        if: ${{ github.event.repository.has_pages }}
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        if: ${{ github.event.repository.has_pages }}
