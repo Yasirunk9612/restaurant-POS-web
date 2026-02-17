@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant POS - Desktop Software</title>
+    <meta name="description"
+        content="Restaurant POS is a modern desktop POS system built with Electron, Vite, React, Prisma, and SQLite for fast order entry and clean receipt printing." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <script>
+        tailwind = {
+            config: {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Space Grotesk", "system-ui", "sans-serif"],
+                        },
+                        colors: {
+                            glass: "rgba(255, 255, 255, 0.08)",
+                        },
+                        boxShadow: {
+                            glow: "0 0 25px rgba(56, 189, 248, 0.35)",
+                        },
+                        keyframes: {
+                            floaty: {
+                                "0%, 100%": { transform: "translateY(0px)" },
+                                "50%": { transform: "translateY(-8px)" },
+                            },
+                            fadeUp: {
+                                "0%": { opacity: "0", transform: "translateY(16px)" },
+                                "100%": { opacity: "1", transform: "translateY(0)" },
+                            },
+                        },
+                        animation: {
+                            floaty: "floaty 6s ease-in-out infinite",
+                            fadeUp: "fadeUp 0.8s ease-out both",
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: "Space Grotesk", system-ui, sans-serif;
+        }
+
+        .glass {
+            background: rgba(17, 25, 40, 0.55);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .focus-ring:focus-visible {
+            outline: 3px solid rgba(56, 189, 248, 0.7);
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-white">
+    <div class="relative overflow-hidden">
+        <div
+            class="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-gradient-to-br from-cyan-500/40 via-sky-500/30 to-indigo-500/10 blur-3xl">
+        </div>
+        <div
+            class="pointer-events-none absolute top-40 right-0 h-[420px] w-[420px] rounded-full bg-gradient-to-br from-emerald-400/30 via-cyan-300/10 to-transparent blur-3xl">
+        </div>
+
+        <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur">
+            <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 shadow-lg"></div>
+                    <span class="text-lg font-semibold tracking-wide">Restaurant POS</span>
+                </div>
+
+                <div class="hidden items-center gap-6 text-sm md:flex">
+                    <a class="nav-link text-white/70 hover:text-white transition focus-ring"
+                        href="#features">Features</a>
+                    <a class="nav-link text-white/70 hover:text-white transition focus-ring"
+                        href="#screenshots">Screenshots</a>
+                    <a class="nav-link text-white/70 hover:text-white transition focus-ring"
+                        href="#download">Download</a>
+                    <a class="nav-link text-white/70 hover:text-white transition focus-ring" href="#faq">FAQ</a>
+                    <button id="themeToggle"
+                        class="rounded-full border border-white/20 px-3 py-1 text-xs uppercase tracking-wide text-white/70 hover:text-white transition focus-ring"
+                        aria-label="Toggle dark mode">
+                        Dark
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="relative">
+            <section class="mx-auto flex max-w-6xl flex-col gap-12 px-6 pb-20 pt-16 md:flex-row md:items-center"
+                id="hero">
+                <div class="flex-1">
+                    <p
+                        class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-widest text-white/70">
+                        Premium Desktop POS Suite
+                    </p>
+                    <h1 class="text-4xl font-semibold leading-tight md:text-6xl">
+                        Run your restaurant with speed, clarity, and local-first control.
+                    </h1>
+                    <p class="mt-6 text-lg text-white/70">
+                        Restaurant POS is a modern desktop system built with Electron, Vite, React, Prisma, and SQLite.
+                        Designed for fast order entry, dining/takeaway workflows, and clean receipt printing with LKR
+                        currency formatting.
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-4">
+                        <a id="downloadPrimary" href="#download"
+                            class="rounded-full bg-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-glow transition hover:shadow-lg focus-ring">Download
+                            for Windows</a>
+                        <a id="githubPrimary" href="https://github.com"
+                            class="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/60 hover:text-white focus-ring">View
+                            on GitHub</a>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap gap-3 text-xs text-white/70">
+                        <span class="rounded-full border border-white/20 px-3 py-1">Electron</span>
+                        <span class="rounded-full border border-white/20 px-3 py-1">React</span>
+                        <span class="rounded-full border border-white/20 px-3 py-1">SQLite</span>
+                        <span class="rounded-full border border-white/20 px-3 py-1">LKR</span>
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <div class="glass rounded-3xl p-6 shadow-2xl">
+                        <div class="flex items-center justify-between text-sm text-white/60">
+                            <span>Restaurant POS Dashboard</span>
+                            <span>Live Preview</span>
+                        </div>
+                        <div class="mt-6 space-y-4">
+                            <div class="h-32 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-900/50 p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="h-3 w-24 rounded-full bg-white/20"></div>
+                                    <div class="h-3 w-12 rounded-full bg-cyan-400/60"></div>
+                                </div>
+                                <div class="mt-4 grid grid-cols-3 gap-3">
+                                    <div class="h-12 rounded-xl bg-white/10"></div>
+                                    <div class="h-12 rounded-xl bg-white/10"></div>
+                                    <div class="h-12 rounded-xl bg-white/10"></div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="h-24 rounded-2xl bg-white/5 p-4"></div>
+                                <div class="h-24 rounded-2xl bg-white/5 p-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="mx-auto max-w-6xl px-6 py-20">
+                <div class="reveal" data-reveal>
+                    <h2 class="text-3xl font-semibold">Features built for busy kitchens</h2>
+                    <p class="mt-4 text-white/70">Every flow is optimized for clarity, speed, and offline reliability.
+                    </p>
+                </div>
+
+                <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20">
+                            <svg class="h-6 w-6 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Menu management</h3>
+                        <p class="mt-2 text-sm text-white/70">Create, edit, and toggle availability with clear
+                            categories and pricing.</p>
+                    </div>
+
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/20">
+                            <svg class="h-6 w-6 text-indigo-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 5h6m-6 4h6m-8 6h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Order handling</h3>
+                        <p class="mt-2 text-sm text-white/70">Dining and takeaway flows with fast order entry and status
+                            tracking.</p>
+                    </div>
+
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20">
+                            <svg class="h-6 w-6 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Billing & payments</h3>
+                        <p class="mt-2 text-sm text-white/70">Summary totals, payment method selection, and accurate LKR
+                            formatting.</p>
+                    </div>
+
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/20">
+                            <svg class="h-6 w-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h10v10H7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Receipt printing</h3>
+                        <p class="mt-2 text-sm text-white/70">Optimized output for 80mm thermal and A4 printers.</p>
+                    </div>
+
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/20">
+                            <svg class="h-6 w-6 text-sky-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Local SQLite database</h3>
+                        <p class="mt-2 text-sm text-white/70">Each PC stores its own data with no central server
+                            required.</p>
+                    </div>
+
+                    <div class="glass reveal rounded-2xl p-6 shadow-lg" data-reveal>
+                        <div
+                            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-fuchsia-500/20">
+                            <svg class="h-6 w-6 text-fuchsia-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold">Windows installer</h3>
+                        <p class="mt-2 text-sm text-white/70">Production builds ship as a streamlined Windows installer.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="screenshots" class="mx-auto max-w-6xl px-6 py-20">
+                <div class="reveal" data-reveal>
+                    <h2 class="text-3xl font-semibold">Screenshots</h2>
+                    <p class="mt-4 text-white/70">Replace images with real app screenshots.</p>
+                </div>
+
+                <div class="mt-10 grid gap-6 md:grid-cols-3">
+                    <div class="glass reveal overflow-hidden rounded-2xl" data-reveal>
+                        <!-- Replace image source with real app screenshot -->
+                        <img src="https://images.unsplash.com/photo-1556745753-b2904692b3cd?auto=format&fit=crop&w=800&q=80"
+                            alt="POS dashboard placeholder" class="h-56 w-full object-cover" />
+                    </div>
+                    <div class="glass reveal overflow-hidden rounded-2xl" data-reveal>
+                        <!-- Replace image source with real app screenshot -->
+                        <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=800&q=80"
+                            alt="Order screen placeholder" class="h-56 w-full object-cover" />
+                    </div>
+                    <div class="glass reveal overflow-hidden rounded-2xl" data-reveal>
+                        <!-- Replace image source with real app screenshot -->
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"
+                            alt="Receipt preview placeholder" class="h-56 w-full object-cover" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="mx-auto max-w-6xl px-6 py-20" id="timeline">
+                <div class="reveal" data-reveal>
+                    <h2 class="text-3xl font-semibold">How it works</h2>
+                    <p class="mt-4 text-white/70">A single flow designed for fast service.</p>
+                </div>
+
+                <div class="mt-10 grid gap-6 md:grid-cols-5">
+                    <div class="glass reveal rounded-2xl p-5 text-sm text-white/80" data-reveal>
+                        <p class="font-semibold">Menu</p>
+                        <p class="mt-2 text-white/60">Build and organize your items.</p>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-5 text-sm text-white/80" data-reveal>
+                        <p class="font-semibold">Orders</p>
+                        <p class="mt-2 text-white/60">Capture dining or takeaway quickly.</p>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-5 text-sm text-white/80" data-reveal>
+                        <p class="font-semibold">Payments</p>
+                        <p class="mt-2 text-white/60">Confirm totals and method.</p>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-5 text-sm text-white/80" data-reveal>
+                        <p class="font-semibold">Print receipts</p>
+                        <p class="mt-2 text-white/60">Optimized for 80mm and A4.</p>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-5 text-sm text-white/80" data-reveal>
+                        <p class="font-semibold">Local DB</p>
+                        <p class="mt-2 text-white/60">SQLite stored per PC.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="download" class="mx-auto max-w-6xl px-6 py-20">
+                <div class="grid gap-10 md:grid-cols-[1.2fr_1fr]">
+                    <div class="reveal" data-reveal>
+                        <h2 class="text-3xl font-semibold">Download Restaurant POS</h2>
+                        <p class="mt-4 text-white/70">Get the latest Windows installer and start running your restaurant
+                            locally.</p>
+                        <ul class="mt-6 space-y-2 text-sm text-white/70">
+                            <li>Local DB per PC (no central server)</li>
+                            <li>Optimized for LKR receipts and printers</li>
+                            <li>Built with Electron, Vite, React, Prisma, and SQLite</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass reveal rounded-3xl p-6 shadow-2xl" data-reveal>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-white/60">Latest Release</p>
+                                <p class="text-xl font-semibold">Restaurant POS</p>
+                            </div>
+                            <span
+                                class="rounded-full border border-white/20 px-3 py-1 text-xs text-white/70">Windows</span>
+                        </div>
+
+                        <div class="mt-6 space-y-2 text-sm text-white/70">
+                            <p><!-- Replace version number -->Version: <span class="text-white">v1.0.0</span></p>
+                            <p><!-- Replace file size -->File size: <span class="text-white">120 MB</span></p>
+                            <p><!-- Replace last updated -->Last updated: <span class="text-white">2026-02-17</span></p>
+                        </div>
+
+                        <div class="mt-6 grid gap-3">
+                            <a id="downloadDirect" href="#"
+                                class="rounded-full bg-cyan-500 px-5 py-3 text-center text-sm font-semibold text-slate-950 shadow-glow transition hover:shadow-lg focus-ring">Direct
+                                Download</a>
+                            <a id="releasesLink" href="#"
+                                class="rounded-full border border-white/20 px-5 py-3 text-center text-sm font-semibold text-white/80 transition hover:border-white/60 hover:text-white focus-ring">GitHub
+                                Releases</a>
+                        </div>
+
+                        <div class="mt-6 rounded-2xl bg-white/5 p-4 text-xs text-white/70">
+                            <p class="font-semibold text-white">Checksum</p>
+                            <p id="checksumText" class="mt-2"><!-- Replace checksum -->SHA256: YOUR_CHECKSUM_HERE</p>
+                            <button id="copyChecksum"
+                                class="mt-3 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/80 hover:border-white/60 hover:text-white focus-ring"
+                                type="button">
+                                Copy checksum
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faq" class="mx-auto max-w-6xl px-6 py-20">
+                <div class="reveal" data-reveal>
+                    <h2 class="text-3xl font-semibold">FAQ</h2>
+                    <p class="mt-4 text-white/70">Quick answers for common questions.</p>
+                </div>
+
+                <div class="mt-10 space-y-4">
+                    <div class="glass reveal rounded-2xl p-6" data-reveal>
+                        <button
+                            class="faq-toggle flex w-full items-center justify-between text-left text-base font-semibold focus-ring"
+                            aria-expanded="false" aria-controls="faq-1">
+                            Is it online?
+                            <span class="text-white/60">+</span>
+                        </button>
+                        <div id="faq-1" class="faq-content mt-3 hidden text-sm text-white/70">
+                            No. Restaurant POS is local-first and runs entirely on a single PC.
+                        </div>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-6" data-reveal>
+                        <button
+                            class="faq-toggle flex w-full items-center justify-between text-left text-base font-semibold focus-ring"
+                            aria-expanded="false" aria-controls="faq-2">
+                            Does it work without internet?
+                            <span class="text-white/60">+</span>
+                        </button>
+                        <div id="faq-2" class="faq-content mt-3 hidden text-sm text-white/70">
+                            Yes. It uses a local SQLite database, so you can work fully offline.
+                        </div>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-6" data-reveal>
+                        <button
+                            class="faq-toggle flex w-full items-center justify-between text-left text-base font-semibold focus-ring"
+                            aria-expanded="false" aria-controls="faq-3">
+                            Where is data stored?
+                            <span class="text-white/60">+</span>
+                        </button>
+                        <div id="faq-3" class="faq-content mt-3 hidden text-sm text-white/70">
+                            Data lives locally on each PC in a SQLite database.
+                        </div>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-6" data-reveal>
+                        <button
+                            class="faq-toggle flex w-full items-center justify-between text-left text-base font-semibold focus-ring"
+                            aria-expanded="false" aria-controls="faq-4">
+                            Can I use multiple PCs?
+                            <span class="text-white/60">+</span>
+                        </button>
+                        <div id="faq-4" class="faq-content mt-3 hidden text-sm text-white/70">
+                            Each PC runs its own local database; there is no central sync server.
+                        </div>
+                    </div>
+                    <div class="glass reveal rounded-2xl p-6" data-reveal>
+                        <button
+                            class="faq-toggle flex w-full items-center justify-between text-left text-base font-semibold focus-ring"
+                            aria-expanded="false" aria-controls="faq-5">
+                            Printing support (80mm/A4)
+                            <span class="text-white/60">+</span>
+                        </button>
+                        <div id="faq-5" class="faq-content mt-3 hidden text-sm text-white/70">
+                            Receipt output is optimized for 80mm thermal printers and A4 paper.
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t border-white/10 px-6 py-10">
+            <div
+                class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+                <div>
+                    <p class="text-lg font-semibold">Restaurant POS</p>
+                    <p class="text-sm text-white/60">Built for fast service, clean printing, and offline reliability.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-4 text-sm text-white/70">
+                    <a href="https://github.com" class="hover:text-white focus-ring">GitHub</a>
+                    <a href="#" id="footerReleases" class="hover:text-white focus-ring">Releases</a>
+                    <a href="mailto:support@example.com" class="hover:text-white focus-ring">Support Email</a>
+                </div>
+            </div>
+            <p class="mt-6 text-center text-xs text-white/50">© 2026 Restaurant POS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div id="toast"
+        class="pointer-events-none fixed bottom-6 right-6 hidden rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg">
+        Copied to clipboard
+    </div>
+
+    <script>
+        // Replace download URL here
+        const DOWNLOAD_URL = "https://github.com/Yasirunk9612/restaurant-POS-/releases/download/RestaurantPOS/Restaurant.POS.Setup.1.0.0.exe";
+        // Replace releases URL here
+        const RELEASES_URL = "https://github.com/Yasirunk9612/restaurant-POS-/releases/tag/RestaurantPOS";
+
+        const downloadDirect = document.getElementById("downloadDirect");
+        const releasesLink = document.getElementById("releasesLink");
+        const footerReleases = document.getElementById("footerReleases");
+        const downloadPrimary = document.getElementById("downloadPrimary");
+
+        downloadDirect.href = DOWNLOAD_URL;
+        downloadPrimary.href = DOWNLOAD_URL;
+        releasesLink.href = RELEASES_URL;
+        footerReleases.href = RELEASES_URL;
+
+        const navLinks = Array.from(document.querySelectorAll(".nav-link"));
+        const sections = navLinks
+            .map((link) => document.querySelector(link.getAttribute("href")))
+            .filter(Boolean);
+
+        navLinks.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                const target = document.querySelector(link.getAttribute("href"));
+                if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+        });
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+
+        document.querySelectorAll("[data-reveal]").forEach((el) => {
+            el.classList.add("reveal");
+            observer.observe(el);
+        });
+
+        const highlightActiveSection = () => {
+            let current = sections[0];
+            sections.forEach((section) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 140 && rect.bottom >= 140) {
+                    current = section;
+                }
+            });
+
+            navLinks.forEach((link) => {
+                const isActive = link.getAttribute("href") === `#${current.id}`;
+                link.classList.toggle("text-white", isActive);
+                link.classList.toggle("text-white/70", !isActive);
+            });
+        };
+
+        window.addEventListener("scroll", highlightActiveSection);
+        highlightActiveSection();
+
+        const toast = document.getElementById("toast");
+        let toastTimeout;
+        const showToast = (message) => {
+            toast.textContent = message;
+            toast.classList.remove("hidden");
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.add("hidden"), 2200);
+        };
+
+        document.getElementById("copyChecksum").addEventListener("click", async () => {
+            const text = document.getElementById("checksumText").textContent.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("Checksum copied");
+            } catch (error) {
+                showToast("Copy failed");
+            }
+        });
+
+        document.querySelectorAll(".faq-toggle").forEach((button) => {
+            button.addEventListener("click", () => {
+                const content = document.getElementById(button.getAttribute("aria-controls"));
+                const isOpen = button.getAttribute("aria-expanded") === "true";
+                button.setAttribute("aria-expanded", String(!isOpen));
+                content.classList.toggle("hidden", isOpen);
+            });
+        });
+
+        const themeToggle = document.getElementById("themeToggle");
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem("theme");
+        if (storedTheme === "dark") {
+            root.classList.add("dark");
+            themeToggle.textContent = "Light";
+        }
+
+        themeToggle.addEventListener("click", () => {
+            root.classList.toggle("dark");
+            const isDark = root.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+            themeToggle.textContent = isDark ? "Light" : "Dark";
+        });
+    </script>
+</body>
+
+</html>
